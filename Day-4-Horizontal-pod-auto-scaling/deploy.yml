@@ -1,23 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: swiggy-app
-  labels:
-    app: swiggy-app
+  name: nginx-hpa
+  namespace: default
 spec:
-  replicas: 15
+  replicas: 1
   selector:
     matchLabels:
-      app: swiggy-app
+      app: nginx
   template:
     metadata:
       labels:
-        app: swiggy-app
+        app: nginx
     spec:
-      terminationGracePeriodSeconds: 30
       containers:
-      - name: swiggy-app
-        #image: veeranarni/hotstar:latest
-        image: httpd
-        imagePullPolicy: "Always"
-        
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          # You must specify requests for CPU to autoscale
+          # based on CPU utilization
+          requests:
+            cpu: "250m"
